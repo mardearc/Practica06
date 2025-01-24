@@ -12,7 +12,7 @@ import java.util.List;
 
 public class MainFrame extends JFrame {
     private static final int FRAME_WIDTH = 800;
-    private static final int FRAME_HEIGHT = 600;
+    private static final int FRAME_HEIGHT = 800;
     private static final int NUM_GLOBOS = 4;
 
     private List<Globo> globos;
@@ -33,7 +33,7 @@ public class MainFrame extends JFrame {
         // Crear globos
         globos = new ArrayList<>();
         for (int i = 0; i < NUM_GLOBOS; i++) {
-            Globo globo = new Globo(100 + (i * 150), FRAME_HEIGHT - 100, 40, 60, i + 1);
+            Globo globo = new Globo(100 + (i * 150), FRAME_HEIGHT - 100, 100, 120, i + 1);
             globos.add(globo);
         }
 
@@ -72,12 +72,12 @@ public class MainFrame extends JFrame {
             }
         };
 
-        panel.setBounds(0, 0, 800, 450);
+        panel.setBounds(0, 0, 800, 600);
         getContentPane().add(panel);
 
         // Botón para iniciar la carrera
         JButton startButton = new JButton("Iniciar Carrera");
-        startButton.setBounds(325, 500, 150, 30);
+        startButton.setBounds(324, 654, 150, 30);
         startButton.addActionListener(e -> {
             carreraIniciada = true;
             for (Globo globo : globos) {
@@ -108,10 +108,12 @@ public class MainFrame extends JFrame {
 
                     // Verificar colisiones
                     for (Globo globo : globos) {
-                        if (!globo.isFinalizado() && globo.getY() <= techo.getAltura()) {
-                            globo.setFinalizado(true);
-                            globo.explotar();
-                        }
+                    	if (!globo.isFinalizado() && globo.getY() <= techo.getAltura()) {
+                    	    globo.setFinalizado(true);
+                    	    globo.setTiempoFinalizacion(System.nanoTime()); // Guarda el tiempo de llegada
+                    	    globo.explotar();
+                    	}
+
                     }
 
                     // Terminar si todos los globos llegan
@@ -131,11 +133,11 @@ public class MainFrame extends JFrame {
     }
 
     private void mostrarPodio() {
-        globos.sort((g1, g2) -> Integer.compare(g2.getGloboId(), g1.getGloboId()));
+    	globos.sort((g1, g2) -> Long.compare(g1.getTiempoFinalizacion(), g2.getTiempoFinalizacion()));
         StringBuilder podio = new StringBuilder("¡Resultados de la carrera!\n");
-        podio.append("Oro: Globo ").append(globos.get(0).getId()).append("\n");
-        podio.append("Plata: Globo ").append(globos.get(1).getId()).append("\n");
-        podio.append("Bronce: Globo ").append(globos.get(2).getId()).append("\n");
+        podio.append("Oro: Globo ").append(globos.get(0).getGloboId()).append("\n");
+        podio.append("Plata: Globo ").append(globos.get(1).getGloboId()).append("\n");
+        podio.append("Bronce: Globo ").append(globos.get(2).getGloboId()).append("\n");
 
         JOptionPane.showMessageDialog(this, podio.toString(), "Podio", JOptionPane.INFORMATION_MESSAGE);
         System.exit(0);

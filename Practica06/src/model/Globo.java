@@ -1,7 +1,13 @@
 package model;
 
 import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.Random;
+
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 
 import java.awt.*;
 import java.util.Random;
@@ -15,6 +21,10 @@ public class Globo extends Thread {
     private int velocidad;
     private Image spriteGlobo;
     private Image spriteExplosion;
+    private long tiempoFinalizacion;
+
+    
+
 
     public Globo(int x, int y, int ancho, int alto, int id) {
         this.x = x;
@@ -28,8 +38,22 @@ public class Globo extends Thread {
         this.random = new Random();
 
         // Cargar sprites
-        spriteGlobo = Toolkit.getDefaultToolkit().getImage("globo.png");
-        spriteExplosion = Toolkit.getDefaultToolkit().getImage("explosion.png");
+        try {
+        	File archivoGlobo = new File("images/globo.png");
+        	File archivoExplosion = new File("images/explosion.png");
+        	try {
+				BufferedImage imagenGlobo = ImageIO.read(archivoGlobo);
+				BufferedImage imagenExplosion = ImageIO.read(archivoExplosion);
+
+				spriteGlobo = imagenGlobo;
+				spriteExplosion = imagenExplosion;
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+         } catch (NullPointerException e) {
+            System.err.println("Error: No se pudo cargar la imagen. Verifica la ruta.");
+        }
     }
 
     public void run() {
@@ -49,11 +73,14 @@ public class Globo extends Thread {
 
     public void dibujar(Graphics g) {
         if (explotado) {
+            // Dibuja la imagen de explosión si el globo ha explotado
             g.drawImage(spriteExplosion, x, y, ancho, alto, null);
         } else {
+            // Dibuja la imagen del globo si aún no ha explotado
             g.drawImage(spriteGlobo, x, y, ancho, alto, null);
         }
     }
+
 
     public void explotar() {
         explotado = true;
@@ -81,6 +108,14 @@ public class Globo extends Thread {
 
     public void setFinalizado(boolean finalizado) {
         this.finalizado = finalizado;
+    }
+    
+    public long getTiempoFinalizacion() {
+        return tiempoFinalizacion;
+    }
+
+    public void setTiempoFinalizacion(long tiempoFinalizacion) {
+        this.tiempoFinalizacion = tiempoFinalizacion;
     }
 }
 
