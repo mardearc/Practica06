@@ -8,6 +8,7 @@ import java.util.Random;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
+import javax.swing.Timer;
 
 import java.awt.*;
 import java.util.Random;
@@ -88,6 +89,21 @@ public class Globo extends Thread {
 
     public void frenar() {
         velocidad = Math.max(1, velocidad - 2);
+
+        // Crear un temporizador para esperar antes de llamar a acelerar()
+        Timer timer = new Timer(1000, e -> { // Espera 1 segundo (1000 ms)
+            acelerar();
+        });
+
+        timer.setRepeats(false); // Solo ejecuta una vez
+        timer.start();
+    }
+
+    public void acelerar() {
+    	if(velocidad < 10) {
+    		velocidad = Math.max(1, velocidad + 2);
+    	}
+        
     }
 
     public boolean contains(int mouseX, int mouseY) {
