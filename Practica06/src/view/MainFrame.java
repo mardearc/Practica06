@@ -118,6 +118,12 @@ public class MainFrame extends JFrame {
 
                     // Terminar si todos los globos llegan
                     if (globos.stream().allMatch(Globo::isFinalizado)) {
+                    	try {
+							Thread.sleep(200); //Esperar 0.2 segundos para que de tiempo a explotar a todos los globos
+						} catch (InterruptedException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
                         mostrarPodio();
                         break;
                     }
