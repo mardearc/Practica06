@@ -11,15 +11,26 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainFrame extends JFrame {
-    private static final int ANCHO = 800;
-    private static final int ALTO = 800;
-    private static final int NUM_GLOBOS = 4;
+	private static final int ANCHO = 800; // Ancho de la ventana
+	private static final int ALTO = 800;  // Alto de la ventana
 
-    private List<Globo> globos;
-    private Techo techo;
-    private boolean carreraIniciada = false;
-    private JPanel panel;
-    private long lastFrameTime = System.nanoTime();
+	// Constante que define cuántos globos habrá en la simulación.
+	private static final int NUM_GLOBOS = 4;
+
+	// Lista que contendrá los objetos de tipo Globo. Cada objeto representa un globo en la simulación.
+	private List<Globo> globos;
+
+	// Objeto que representa el "techo" en la simulación. Este límite superior podría interactuar con los globos.
+	private Techo techo;
+
+	// Variable booleana que indica si el evento principal ha comenzado.
+	private boolean carreraIniciada = false;
+
+	// Componente gráfico JPanel que servirá como lienzo para dibujar los elementos de la simulación.
+	private JPanel panel;
+
+	// Variable que guarda el tiempo en nanosegundos del último fotograma procesado.
+	private long lastFrameTime = System.nanoTime();
 
     public MainFrame() {
     	setResizable(false);
@@ -138,6 +149,7 @@ public class MainFrame extends JFrame {
         }).start();
     }
 
+    // Método para mostrar el podio de la carrera
     private void mostrarPodio() {
     	globos.sort((g1, g2) -> Long.compare(g1.getTiempoFinalizacion(), g2.getTiempoFinalizacion()));
         StringBuilder podio = new StringBuilder("¡Resultados de la carrera!\n");
@@ -149,6 +161,7 @@ public class MainFrame extends JFrame {
         System.exit(0);
     }
 
+    // Método principal para inciar la aplicación
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> new MainFrame().setVisible(true));
     }
