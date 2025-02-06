@@ -34,7 +34,7 @@ public class MainFrame extends JFrame {
         // Crear globos
         globos = new ArrayList<>();
         for (int i = 0; i < NUM_GLOBOS; i++) {
-            Globo globo = new Globo(100 + (i * 150), ALTO - 100, 100, 120, i + 1);
+            Globo globo = new Globo(100 + (i * 150), ALTO - 275, 100, 120, i + 1);
             globos.add(globo);
         }
 

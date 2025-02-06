@@ -7,11 +7,7 @@ import java.io.IOException;
 import java.util.Random;
 
 import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
 import javax.swing.Timer;
-
-import java.awt.*;
-import java.util.Random;
 
 public class Globo extends Thread {
     private int x, y, ancho, alto;
@@ -40,23 +36,26 @@ public class Globo extends Thread {
         this.golpeado = false; // Inicialmente no está golpeado
         this.velocidad = 5;
         this.random = new Random();
+        
         // Cargar sprites
         try {
             File archivoGlobo = new File("images/globo.png");
             File archivoExplosion = new File("images/explosion.png");
-            File archivoGolpeado = new File("images/globogolpeado.png"); // Ruta de la imagen golpeada
+            File archivoGolpeado = new File("images/globogolpeado.png"); 
+            
             BufferedImage imagenGlobo = ImageIO.read(archivoGlobo);
             BufferedImage imagenExplosion = ImageIO.read(archivoExplosion);
-            BufferedImage imagenGolpeado = ImageIO.read(archivoGolpeado); // Carga la imagen golpeada
+            BufferedImage imagenGolpeado = ImageIO.read(archivoGolpeado); 
+            
             spriteGlobo = imagenGlobo;
             spriteExplosion = imagenExplosion;
-            spriteGolpeado = imagenGolpeado; // Asigna la imagen golpeada
+            spriteGolpeado = imagenGolpeado; 
         } catch (IOException e) {
             System.err.println("Error: No se pudo cargar una o más imágenes. Verifica las rutas.");
             e.printStackTrace();
         }
     }
-
+    // Movimiento de los globos
     public void run() {
         while (!finalizado) {
             y -= velocidad;
@@ -114,6 +113,7 @@ public class Globo extends Thread {
         }
     }
 
+    // Método para acelerar el globo después de que haya sido frenado
     public void acelerar() {
     	if(velocidad < 10) {
     		velocidad = Math.max(1, velocidad + 2);
