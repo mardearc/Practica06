@@ -11,8 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainFrame extends JFrame {
-    private static final int FRAME_WIDTH = 800;
-    private static final int FRAME_HEIGHT = 800;
+    private static final int ANCHO = 800;
+    private static final int ALTO = 800;
     private static final int NUM_GLOBOS = 4;
 
     private List<Globo> globos;
@@ -22,18 +22,19 @@ public class MainFrame extends JFrame {
     private long lastFrameTime = System.nanoTime();
 
     public MainFrame() {
+    	setResizable(false);
         setTitle("Carrera de Globos");
-        setSize(FRAME_WIDTH, FRAME_HEIGHT);
+        setSize(ANCHO, ALTO);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         getContentPane().setLayout(null);
 
         // Crear techo
-        techo = new Techo(0, 0, FRAME_WIDTH, 50);
+        techo = new Techo(0, 0, ANCHO, 50);
 
         // Crear globos
         globos = new ArrayList<>();
         for (int i = 0; i < NUM_GLOBOS; i++) {
-            Globo globo = new Globo(100 + (i * 150), FRAME_HEIGHT - 100, 100, 120, i + 1);
+            Globo globo = new Globo(100 + (i * 150), ALTO - 100, 100, 120, i + 1);
             globos.add(globo);
         }
 
@@ -64,8 +65,7 @@ public class MainFrame extends JFrame {
                 long currentTime = System.nanoTime();
                 double fps = 1_000_000_000.0 / (currentTime - lastFrameTime);
                 lastFrameTime = currentTime;
-                offscreenGraphics.setColor(Color.BLACK);
-                offscreenGraphics.drawString(String.format("FPS: %.2f", fps), 10, 20);
+                offscreenGraphics.drawString(String.format("FPS: %.2f", fps), 10, techo.getAltura()+20); // Mostrar los FPS un poco más abajo del techo
 
                 // Dibujar buffer en pantalla
                 g.drawImage(offscreenImage, 0, 0, this);

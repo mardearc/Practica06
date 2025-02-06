@@ -18,10 +18,12 @@ public class Globo extends Thread {
     private int id;
     private boolean finalizado;
     private boolean explotado;
+    private boolean golpeado;
     private Random random;
     private int velocidad;
     private Image spriteGlobo;
     private Image spriteExplosion;
+    private Image spriteGolpeado;
     private long tiempoFinalizacion;
 
     
@@ -35,32 +37,30 @@ public class Globo extends Thread {
         this.id = id;
         this.finalizado = false;
         this.explotado = false;
+        this.golpeado = false; // Inicialmente no está golpeado
         this.velocidad = 5;
         this.random = new Random();
-
         // Cargar sprites
         try {
-        	File archivoGlobo = new File("images/globo.png");
-        	File archivoExplosion = new File("images/explosion.png");
-        	try {
-				BufferedImage imagenGlobo = ImageIO.read(archivoGlobo);
-				BufferedImage imagenExplosion = ImageIO.read(archivoExplosion);
-
-				spriteGlobo = imagenGlobo;
-				spriteExplosion = imagenExplosion;
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-         } catch (NullPointerException e) {
-            System.err.println("Error: No se pudo cargar la imagen. Verifica la ruta.");
+            File archivoGlobo = new File("images/globo.png");
+            File archivoExplosion = new File("images/explosion.png");
+            File archivoGolpeado = new File("images/globogolpeado.png"); // Ruta de la imagen golpeada
+            BufferedImage imagenGlobo = ImageIO.read(archivoGlobo);
+            BufferedImage imagenExplosion = ImageIO.read(archivoExplosion);
+            BufferedImage imagenGolpeado = ImageIO.read(archivoGolpeado); // Carga la imagen golpeada
+            spriteGlobo = imagenGlobo;
+            spriteExplosion = imagenExplosion;
+            spriteGolpeado = imagenGolpeado; // Asigna la imagen golpeada
+        } catch (IOException e) {
+            System.err.println("Error: No se pudo cargar una o más imágenes. Verifica las rutas.");
+            e.printStackTrace();
         }
     }
 
     public void run() {
         while (!finalizado) {
             y -= velocidad;
-            x += random.nextInt(3) - 1;
+            x += random.nextInt(5) - 2;  //Movimiento lateral
 
             if (y <= 0) y = 0;
 
@@ -76,8 +76,11 @@ public class Globo extends Thread {
         if (explotado) {
             // Dibuja la imagen de explosión si el globo ha explotado
             g.drawImage(spriteExplosion, x, y, ancho, alto, null);
+        } else if (golpeado) {
+            // Dibuja la imagen golpeada si el globo fue golpeado
+            g.drawImage(spriteGolpeado, x, y, ancho, alto, null);
         } else {
-            // Dibuja la imagen del globo si aún no ha explotado
+            // Dibuja la imagen normal del globo
             g.drawImage(spriteGlobo, x, y, ancho, alto, null);
         }
     }
@@ -88,15 +91,27 @@ public class Globo extends Thread {
     }
 
     public void frenar() {
-        velocidad = Math.max(1, velocidad - 2);
+        if (!explotado && !golpeado) {
+            // Marca el globo como golpeado
+            golpeado = true;
 
-        // Crear un temporizador para esperar antes de llamar a acelerar()
-        Timer timer = new Timer(1000, e -> { // Espera 1 segundo (1000 ms)
-            acelerar();
-        });
+            // Configura un temporizador para restablecer el estado después de 1000ms
+            Timer timer = new Timer(1000, e -> {
+                golpeado = false; // Vuelve al estado normal después de 1 segundo
+            });
+            timer.setRepeats(false); // Solo ejecuta una vez
+            timer.start();
 
-        timer.setRepeats(false); // Solo ejecuta una vez
-        timer.start();
+            // Reduce la velocidad del globo
+            velocidad = Math.max(1, velocidad - 2);
+
+            // Configura otro temporizador para acelerar después de 1 segundo
+            Timer aceleracionTimer = new Timer(1000, e -> {
+                acelerar(); // Acelera el globo después de 1 segundo
+            });
+            aceleracionTimer.setRepeats(false); // Solo ejecuta una vez
+            aceleracionTimer.start();
+        }
     }
 
     public void acelerar() {
